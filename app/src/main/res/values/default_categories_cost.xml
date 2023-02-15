@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Категории, которые будут добавленны по умолчанию-->
+    <!--Важно чтобы названиб соответствовала картинка-->
+    <string-array name="default_categories_cost_names">
+        <item name="supermarkets">Супермаркеты</item>
+        <item name="homeAndRepair">Дом и ремонт</item>
+        <item name="clothesAndBoots">Одежда и обувь</item>
+        <item name="fastFood">Фастфуд</item>
+        <item name="entertainments">Развлечения</item>
+        <item name="rest">Отдых</item>
+        <item name="electronicsAndEngineering">Электроника и техника</item>
+        <item name="drugstores">Аптеки</item>
+        <item name="transport">Транспорт</item>
+        <item name="taxi">Такси</item>
+        <item name="beauty">Красота</item>
+        <item name="stationery">Канцтовары</item>
+        <item name="cosmetics">Косметика</item>
+        <item name="restaurants">Рестораны</item>
+        <item name="books">Книги</item>
+        <item name="mobileCommunication">Мобильная связь</item>
+        <item name="communication">Связь</item>
+        <item name="souvenirs">Сувениры</item>
+        <item name="music">Музыка</item>
+        <item name="variousProducts">Различные товары</item>
+        <item name="cash">Наличные</item>
+        <item name="service">Сервис</item>
+        <item name="bankService">Услуги банка</item>
+        <item name="translations">Переводы</item>
+    </string-array>
+    <integer-array name="default_categories_cost_images">
+        <item name="supermarkets">@drawable/supermarket</item>
+        <item name="homeAndRepair">@drawable/home_and_repair</item>
+        <item name="clothesAndBoots">@drawable/clothes</item>
+        <item name="fastFood">@drawable/burger</item>
+        <item name="entertainments">@drawable/entertainments</item>
+        <item name="rest">@drawable/sofa</item>
+        <item name="electronicsAndEngineering">@drawable/electronic_device</item>
+        <item name="drugstores">@drawable/drugstore</item>
+        <item name="transport">@drawable/bus</item>
+        <item name="taxi">@drawable/taxi_cab</item>
+        <item name="beauty">@drawable/beauty_mirror</item>
+        <item name="stationery">@drawable/pencil</item>
+        <item name="cosmetics">@drawable/makeup</item>
+        <item name="restaurants">@drawable/restaurant</item>
+        <item name="books">@drawable/book</item>
+        <item name="mobileCommunication">@drawable/mobile_phone</item>
+        <item name="communication">@drawable/online_communication</item>
+        <item name="souvenirs">@drawable/souvenir_ball</item>
+        <item name="music">@drawable/guitar</item>
+        <item name="variousProducts">@drawable/question_mark</item>
+        <item name="cash">@drawable/money</item>
+        <item name="service">@drawable/services</item>
+        <item name="bankService">@drawable/bank</item>
+        <item name="translations">@drawable/translation</item>
+    </integer-array>
+</resources>
+

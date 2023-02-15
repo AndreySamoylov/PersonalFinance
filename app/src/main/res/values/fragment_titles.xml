@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="fragment_titles">
+        <item>Расходы</item>
+        <item>Поступления</item>
+        <item>Категории</item>
+        <item>Счета</item>
+    </string-array>
+</resources>

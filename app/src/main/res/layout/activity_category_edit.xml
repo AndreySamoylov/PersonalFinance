@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".categoryUtilities.CategoryEditActivity">
+
+    <Button
+        android:id="@+id/buttonSetColorCategory"
+        android:layout_width="154dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="28dp"
+        android:text="@string/inputСolor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.266"
+        app:layout_constraintStart_toEndOf="@+id/spinnerChooseImageCateroty"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewCategoryImage" />
+
+    <Spinner
+        android:id="@+id/spinnerChooseImageCateroty"
+        android:layout_width="48dp"
+        android:layout_height="66dp"
+        android:layout_marginStart="100dp"
+        android:addStatesFromChildren="false"
+        android:backgroundTintMode="multiply"
+        android:hapticFeedbackEnabled="false"
+        android:longClickable="false"
+        android:prompt="@string/chooseImage"
+        android:spinnerMode="dialog"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonSetColorCategory"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/buttonSetColorCategory"
+        app:layout_constraintVertical_bias="0.25" />
+
+    <ImageView
+        android:id="@+id/imageViewCategoryImage"
+        android:layout_width="200dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroupCategoryType"
+        app:srcCompat="@android:drawable/list_selector_background" />
+
+    <EditText
+        android:id="@+id/editTextCategpryName"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="140dp"
+        android:ems="10"
+        android:hint="@string/inputName"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/buttonAddOrChangeCategory"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/buttonDeleteCategoryOrBack"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupCategoryType"
+        android:layout_width="200dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:checkedButton="@id/radioButtonCategoryTypeCost"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/radioButtonCategoryTypeCost"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="@string/costRadioButton" />
+
+        <RadioButton
+            android:id="@+id/radioButtonCategoryTypeIncome"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="@string/incomeRadioButton" />
+    </RadioGroup>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

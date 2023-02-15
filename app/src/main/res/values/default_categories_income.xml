@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Категории, которые будут добавленны по умолчанию-->
+    <!--Важно чтобы названиб соответствовала картинка-->
+    <string-array name="default_categories_income_names">
+        <item name="salary">Зарплата</item>
+        <item name="gift">Подарок</item>
+        <item name="translations">Переводы</item>
+        <item name="deposits">Пополнения</item>
+        <item name="bonuses">Бонусы</item>
+        <item name="investment">Инвестиции</item>
+        <item name="percents">Проценты</item>
+    </string-array>
+    <integer-array name="default_categories_income_images">
+        <item name="salary">@drawable/salary</item>
+        <item name="gift">@drawable/gift</item>
+        <item name="translations">@drawable/translation</item>
+        <item name="deposits">@drawable/deposit</item>
+        <item name="bonuses">@drawable/bonus</item>
+        <item name="investment">@drawable/investment</item>
+        <item name="percents">@drawable/percent</item>
+    </integer-array>
+</resources>
