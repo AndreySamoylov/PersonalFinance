@@ -61,22 +61,17 @@ class CategoryFragment : Fragment(), MyCategoryAdapter.Listener {
             }
         }
     }
+
     override fun onStart() {
         super.onStart()
         myDbManager.openDatabase()
 
         val list : List<MyCategory> = myDbManager.fromCategories(MyConstants.CATEGORY_TYPE_COST)
         adapter.addAllCategoryList(list)
-    }
-    override fun onPause() {
-        super.onPause()
+
         myDbManager.closeDatabase()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        myDbManager.closeDatabase()
-    }
     companion object{
         @JvmStatic
         fun newInstance() = CategoryFragment()

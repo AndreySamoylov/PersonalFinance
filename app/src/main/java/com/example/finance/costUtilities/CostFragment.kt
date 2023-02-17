@@ -22,6 +22,7 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
@@ -79,7 +80,6 @@ class CostFragment : Fragment() {
 
         spinnerAccounts.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
                 createPieChart()
             }
 
@@ -112,8 +112,25 @@ class CostFragment : Fragment() {
         //Назначение слушателя для текстовых полей
         editTextInitialDateCost.setOnClickListener(onEditTextClickListener)
         editTextFinalDateCost.setOnClickListener(onEditTextClickListener)
+    }
 
+    override fun onStart() {
+        super.onStart()
         myDbManager.openDatabase()
+
+        // Создание адаптера для волчка выбора счетов
+        val accountList: ArrayList<MyAccount> = arrayListOf(MyAccount(0, "Все счета"))
+        accountList.addAll(myDbManager.fromAccounts)
+
+        val adapterAccounts = ArrayAdapter(
+            currentContext,
+            R.layout.account_item,
+            R.id.textViewItemAccountName,
+            accountList
+        )
+        spinnerAccounts.adapter = adapterAccounts
+
+        myDbManager.closeDatabase()
 
         // Инициализация календаря
         val calendar: Calendar = Calendar.getInstance()
@@ -147,36 +164,6 @@ class CostFragment : Fragment() {
         calendar.set(Calendar.DAY_OF_MONTH, 1)
         // Установка первого числа текущего месяца
         setDateTimeInitial(calendar.timeInMillis)
-
-
-        // Создание адаптера для волчка выбора счетов
-        val accountList : ArrayList<MyAccount> = arrayListOf(MyAccount(0, "Все счета"))
-        accountList.addAll(myDbManager.fromAccounts)
-
-        val adapterAccounts = ArrayAdapter(
-            currentContext,
-            R.layout.account_item,
-            R.id.textViewItemAccountName,
-            accountList
-        )
-        spinnerAccounts.adapter = adapterAccounts
-
-        myDbManager.closeDatabase()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        myDbManager.openDatabase()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        myDbManager.closeDatabase()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        myDbManager.closeDatabase()
     }
 
     companion object{
@@ -185,6 +172,8 @@ class CostFragment : Fragment() {
     }
 
     private fun createPieChart(){
+        myDbManager.openDatabase()
+
         lateinit var selectedAccount : MyAccount
         try{
             selectedAccount = spinnerAccounts.selectedItem as MyAccount // Выбранные счёт
@@ -208,6 +197,8 @@ class CostFragment : Fragment() {
             }
             allSum += sum
         }
+
+        myDbManager.closeDatabase()
 
         val pieEntriesSelective = ArrayList<PieEntry>() // Список который будет добавлен в диаграмму
         var otherSum = 0f // Сумма остальных категорий
@@ -239,7 +230,7 @@ class CostFragment : Fragment() {
         pieChart.legend.form = Legend.LegendForm.CIRCLE
         pieChart.description.isEnabled = false
         pieChart.centerText = currentContext.resources.getString(R.string.cost)
-        pieChart.animateXY(2000, 2000)
+        pieChart.animateY(500,)
     }
 
     // Обработчик события для выбора даты "от которой нужно считать"

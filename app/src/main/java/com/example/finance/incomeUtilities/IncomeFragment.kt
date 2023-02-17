@@ -22,6 +22,7 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
@@ -111,7 +112,26 @@ class IncomeFragment : Fragment() {
         buttonGoToAllIncomeOperations.setOnClickListener(onEditTextClickListener)
         editTextInitialDateCost.setOnClickListener(onEditTextClickListener)
         editTextFinalDateCost.setOnClickListener(onEditTextClickListener)
+    }
 
+    override fun onStart() {
+        super.onStart()
+
+        myDbManager.openDatabase()
+
+        // Создание адаптера для волчка выбора счетов
+        val accountList: ArrayList<MyAccount> = arrayListOf(MyAccount(0, "Все счета"))
+        accountList.addAll(myDbManager.fromAccounts)
+
+        val adapterAccounts = ArrayAdapter(
+            currentContext,
+            R.layout.account_item,
+            R.id.textViewItemAccountName,
+            accountList
+        )
+        spinnerAccounts.adapter = adapterAccounts
+
+        myDbManager.closeDatabase()
         // Инициализация календаря
         val calendar: Calendar = Calendar.getInstance()
         calendar.timeInMillis = Date().time.milliseconds.inWholeMilliseconds
@@ -144,26 +164,6 @@ class IncomeFragment : Fragment() {
         calendar.set(Calendar.DAY_OF_MONTH, 1)
         // Установка первого числа текущего месяца
         setDateTimeInitial(calendar.timeInMillis)
-
-
-        // Создание адаптера для волчка выбора счетов
-        val accountList : ArrayList<MyAccount> = arrayListOf(MyAccount(0, "Все счета"))
-        accountList.addAll(myDbManager.fromAccounts)
-
-        val adapterAccounts = ArrayAdapter(
-            currentContext,
-            R.layout.account_item,
-            R.id.textViewItemAccountName,
-            accountList
-        )
-        spinnerAccounts.adapter = adapterAccounts
-
-        myDbManager.closeDatabase()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        myDbManager.closeDatabase()
     }
 
     companion object{
@@ -172,6 +172,7 @@ class IncomeFragment : Fragment() {
     }
 
     private fun createPieChart(){
+        // *************** Открытие базы данных
         myDbManager.openDatabase()
 
         lateinit var selectedAccount : MyAccount
@@ -197,6 +198,9 @@ class IncomeFragment : Fragment() {
             }
             allSum += sum
         }
+        // *************** Закрытие базы данных
+        myDbManager.closeDatabase()
+
 
         val pieEntriesSelective = ArrayList<PieEntry>() // Список который будет добавлен в диаграмму
         var otherSum = 0f // Сумма остальных категорий
@@ -228,9 +232,7 @@ class IncomeFragment : Fragment() {
         pieChart.legend.form = Legend.LegendForm.CIRCLE
         pieChart.description.isEnabled = false
         pieChart.centerText = currentContext.resources.getString(R.string.income)
-        pieChart.animateXY(2000, 2000)
-
-        myDbManager.closeDatabase()
+        pieChart.animateY(500)
     }
 
     // Обработчик события для выбора даты "от которой нужно считать"
