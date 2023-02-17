@@ -35,8 +35,8 @@
 
     <ImageView
         android:id="@+id/imageViewCategoryImage"
-        android:layout_width="200dp"
-        android:layout_height="150dp"
+        android:layout_width="260dp"
+        android:layout_height="163dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,8 +76,8 @@
 
     <RadioGroup
         android:id="@+id/radioGroupCategoryType"
-        android:layout_width="200dp"
-        android:layout_height="48dp"
+        android:layout_width="263dp"
+        android:layout_height="33dp"
         android:layout_marginTop="10dp"
         android:checkedButton="@id/radioButtonCategoryTypeCost"
         android:orientation="horizontal"
@@ -93,7 +93,7 @@
 
         <RadioButton
             android:id="@+id/radioButtonCategoryTypeIncome"
-            android:layout_width="100dp"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:text="@string/incomeRadioButton" />
     </RadioGroup>

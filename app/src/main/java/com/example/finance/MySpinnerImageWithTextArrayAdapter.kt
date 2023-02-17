@@ -1,4 +1,4 @@
-package com.example.finance.costUtilities
+package com.example.finance
 
 import android.content.Context
 import android.graphics.Color

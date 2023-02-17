@@ -1,17 +1,12 @@
-package com.example.finance.costUtilities
+package com.example.finance.incomeUtilities
 
 import android.app.DatePickerDialog
-import android.app.DatePickerDialog.OnDateSetListener
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.MenuItem
-import android.view.View.OnClickListener
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import android.view.View
+import android.widget.*
 import com.example.finance.MyConstants
 import com.example.finance.MyFunction
 import com.example.finance.MySpinnerImageWithTextArrayAdapter
@@ -20,28 +15,28 @@ import com.example.finance.database.MyDbManager
 import com.example.finance.items.MyAccount
 import com.example.finance.items.MyCategory
 import com.example.finance.items.MyCost
+import com.example.finance.items.MyIncome
 import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
 
+class IncomeEditActivity : AppCompatActivity() {
 
-class CostEditActivity : AppCompatActivity() {
-
-    private lateinit var editTextCostSum : EditText
-    private lateinit var editTextDateCost : EditText
+    private lateinit var editTextIncomeSum : EditText
+    private lateinit var editTextDateIncome : EditText
     private lateinit var dateInSqliteformat : String // Дата в формате для добавления в базу данных SQLite
-    private lateinit var editTextCostComment : EditText
-    private lateinit var buttonTodayCost : Button
-    private lateinit var buttonYesterdayCost : Button
-    private lateinit var buttonDayBeforeYesterdayCost : Button
-    private lateinit var buttonChangeDateCost : Button
-    private lateinit var buttonAddOrChangeCost : Button
-    private lateinit var buttonDeleteCostOrBack : Button
+    private lateinit var editTextIncomeComment : EditText
+    private lateinit var buttonTodayIncome : Button
+    private lateinit var buttonYesterdayIncome : Button
+    private lateinit var buttonDayBeforeYesterdayIncome : Button
+    private lateinit var buttonChangeDateIncome : Button
+    private lateinit var buttonAddOrChangeIncome : Button
+    private lateinit var buttonDeleteIncomeOrBack : Button
     private lateinit var spinnerAccounts : Spinner
     private lateinit var spinnerCategory : Spinner
 
     private lateinit var myDbManager : MyDbManager
 
-    private lateinit var receivedCost : MyCost
+    private lateinit var receivedIncome : MyIncome
 
     private var state : String = MyConstants.STATE_ADD
 
@@ -49,21 +44,21 @@ class CostEditActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_cost_edit)
+        setContentView(R.layout.activity_income_edit)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        editTextCostSum = findViewById(R.id.editTextCostSum)
-        editTextDateCost = findViewById(R.id.editTextDateCost)
-        editTextCostComment = findViewById(R.id.editTextCostComment)
-        buttonTodayCost = findViewById(R.id.buttonTodayCost)
-        buttonYesterdayCost = findViewById(R.id.buttonYesterdayCost)
-        buttonDayBeforeYesterdayCost = findViewById(R.id.buttonDayBeforeYesterdayCost)
-        buttonChangeDateCost = findViewById(R.id.buttonChangeDateCost)
-        buttonAddOrChangeCost = findViewById(R.id.buttonAddOrChangeCost)
-        buttonDeleteCostOrBack = findViewById(R.id.buttonDeleteCostOrBack)
-        spinnerAccounts = findViewById(R.id.spinnerEditAccountCost)
-        spinnerCategory = findViewById(R.id.spinnerEditCategoryCost)
+        editTextIncomeSum = findViewById(R.id.editTextIncomeSum)
+        editTextDateIncome = findViewById(R.id.editTextDateIncome)
+        editTextIncomeComment = findViewById(R.id.editTextIncomeComment)
+        buttonTodayIncome = findViewById(R.id.buttonTodayIncome)
+        buttonYesterdayIncome = findViewById(R.id.buttonYesterdayIncome)
+        buttonDayBeforeYesterdayIncome = findViewById(R.id.buttonDayBeforeYesterdayIncome)
+        buttonChangeDateIncome = findViewById(R.id.buttonChangeDateIncome)
+        buttonAddOrChangeIncome = findViewById(R.id.buttonAddOrChangeIncome)
+        buttonDeleteIncomeOrBack = findViewById(R.id.buttonDeleteIncomeOrBack)
+        spinnerAccounts = findViewById(R.id.spinnerEditAccountIncome)
+        spinnerCategory = findViewById(R.id.spinnerEditCategoryIncome)
 
         myDbManager = MyDbManager(this)
 
@@ -73,75 +68,83 @@ class CostEditActivity : AppCompatActivity() {
 
         // Создание слушателя нажатий для кнопок:
         // сегодня, вчера, послезавтра, изменить дату, добавить или изменить, удалить или отмена
-        val onButtonClickListener = OnClickListener { view ->
+        val onButtonClickListener = View.OnClickListener { view ->
             val today = Date().time.milliseconds.inWholeMilliseconds
             when (view.id) {
-                R.id.buttonTodayCost -> {
+                R.id.buttonTodayIncome -> {
                     setDateTime(today)
                 }
-                R.id.buttonYesterdayCost -> {
+                R.id.buttonYesterdayIncome -> {
                     val yesterday = today - 86400000 //86400000 - 1 день в миллисекундах
                     setDateTime(yesterday)
                 }
-                R.id.buttonDayBeforeYesterdayCost -> {
-                    val dayBeforeYesterday = today - (86400000 * 2) //86400000 - 1 день в миллисекундах
+                R.id.buttonDayBeforeYesterdayIncome -> {
+                    val dayBeforeYesterday =
+                        today - (86400000 * 2) //86400000 - 1 день в миллисекундах
                     setDateTime(dayBeforeYesterday)
                 }
-                R.id.buttonChangeDateCost ->{
+                R.id.buttonChangeDateIncome -> {
                     DatePickerDialog(
-                        this@CostEditActivity, dateListener,
+                        this@IncomeEditActivity, dateListener,
                         dateAndTime.get(Calendar.YEAR),
                         dateAndTime.get(Calendar.MONTH),
                         dateAndTime.get(Calendar.DAY_OF_MONTH)
                     ).show()
                 }
-                R.id.buttonAddOrChangeCost ->{
+                R.id.buttonAddOrChangeIncome -> {
                     if (state == MyConstants.STATE_ADD) {
-                        val sum: Double = editTextCostSum.text.toString().toDouble()
-                        val comment: String = editTextCostComment.text.toString()
+                        val sum: Double = editTextIncomeSum.text.toString().toDouble()
+                        val comment: String = editTextIncomeComment.text.toString()
                         val myAccount: MyAccount = spinnerAccounts.selectedItem as MyAccount
                         val accountID = myAccount._id
                         val myCategory: MyCategory = spinnerCategory.selectedItem as MyCategory
                         val categoryID = myCategory._id
 
-                        val addCost = MyCost(0, sum, dateInSqliteformat, comment, accountID, categoryID)
-                        myDbManager.insertToCosts(addCost)
+                        val addIncome =
+                            MyIncome(0, sum, dateInSqliteformat, comment, accountID, categoryID)
+                        myDbManager.insertToIncome(addIncome)
 
                         refreshFields()
 
                         Toast.makeText(this, R.string.recordHaveAdded, Toast.LENGTH_SHORT).show()
-                    }
-                    else{
-                        val sum: Double = editTextCostSum.text.toString().toDouble()
-                        val comment: String = editTextCostComment.text.toString()
+                    } else {
+                        val sum: Double = editTextIncomeSum.text.toString().toDouble()
+                        val comment: String = editTextIncomeComment.text.toString()
                         val myAccount: MyAccount = spinnerAccounts.selectedItem as MyAccount
                         val accountID = myAccount._id
                         val myCategory: MyCategory = spinnerCategory.selectedItem as MyCategory
                         val categoryID = myCategory._id
 
-                        val changeCost = MyCost(receivedCost._id, sum, dateInSqliteformat, comment, accountID, categoryID)
-                        myDbManager.updateInCosts(changeCost)
-
-                        finish()
+                        val changeIncome = MyIncome(
+                            receivedIncome._id,
+                            sum,
+                            dateInSqliteformat,
+                            comment,
+                            accountID,
+                            categoryID
+                        )
+                        myDbManager.updateInIncome(changeIncome)
 
                         Toast.makeText(this, R.string.recordHaveChanged, Toast.LENGTH_SHORT).show()
+
+                        finish()
                     }
                 }
-                R.id.buttonDeleteCostOrBack ->{
-                    if (state == MyConstants.STATE_CHANGE_OR_DELETE){
-                        myDbManager.deleteFromCosts(receivedCost._id)
+                R.id.buttonDeleteIncomeOrBack -> {
+                    if (state == MyConstants.STATE_CHANGE_OR_DELETE) {
+                        myDbManager.deleteFromIncome(receivedIncome._id)
                     }
                     finish()
                 }
             }
         }
         // Назначение слушателя нажатий для кнопок
-        buttonTodayCost.setOnClickListener(onButtonClickListener)
-        buttonYesterdayCost.setOnClickListener(onButtonClickListener)
-        buttonDayBeforeYesterdayCost.setOnClickListener(onButtonClickListener)
-        buttonChangeDateCost.setOnClickListener(onButtonClickListener)
-        buttonAddOrChangeCost.setOnClickListener(onButtonClickListener)
-        buttonDeleteCostOrBack.setOnClickListener(onButtonClickListener)
+        buttonTodayIncome.setOnClickListener(onButtonClickListener)
+        buttonYesterdayIncome.setOnClickListener(onButtonClickListener)
+        buttonDayBeforeYesterdayIncome.setOnClickListener(onButtonClickListener)
+        buttonChangeDateIncome.setOnClickListener(onButtonClickListener)
+        buttonAddOrChangeIncome.setOnClickListener(onButtonClickListener)
+        buttonDeleteIncomeOrBack.setOnClickListener(onButtonClickListener)
     }
 
     override fun onStart() {
@@ -149,26 +152,26 @@ class CostEditActivity : AppCompatActivity() {
 
         state = intent.getStringExtra(MyConstants.STATE).toString()
         if(state == MyConstants.STATE_CHANGE_OR_DELETE){
-            receivedCost = MyFunction.getSerializable(
+            receivedIncome = MyFunction.getSerializable(
                 this,
-                MyConstants.KEY_MY_COST,
-                MyCost::class.java
+                MyConstants.KEY_MY_INCOME,
+                MyIncome::class.java
             )
 
             // Получение даты
             val calendar: Calendar = Calendar.getInstance()
-            val year  = receivedCost._date_cost.subSequence(0, 4).toString().toInt()
-            val month = receivedCost._date_cost.subSequence(5, 7).toString().toInt()
-            val day = receivedCost._date_cost.subSequence(8, 10).toString().toInt()
+            val year  = receivedIncome._date_income.subSequence(0, 4).toString().toInt()
+            val month = receivedIncome._date_income.subSequence(5, 7).toString().toInt()
+            val day = receivedIncome._date_income.subSequence(8, 10).toString().toInt()
             calendar.set(Calendar.YEAR, year)
             calendar.set(Calendar.DAY_OF_MONTH, month)
             calendar.set(Calendar.DAY_OF_MONTH, day)
             setDateTime(calendar.timeInMillis)
 
-            editTextCostSum.setText(receivedCost._sum.toString())
-            editTextCostComment.setText(receivedCost._comment)
-            buttonAddOrChangeCost.setText(R.string.change)
-            buttonDeleteCostOrBack.setText(R.string.remove)
+            editTextIncomeSum.setText(receivedIncome._sum.toString())
+            editTextIncomeComment.setText(receivedIncome._comment)
+            buttonAddOrChangeIncome.setText(R.string.change)
+            buttonDeleteIncomeOrBack.setText(R.string.remove)
         }
     }
 
@@ -186,7 +189,7 @@ class CostEditActivity : AppCompatActivity() {
         spinnerAccounts.adapter = adapterAccounts
 
         //Создание адаптера для волчка для выбора категорий
-        val listCategory = myDbManager.fromCategories(MyConstants.CATEGORY_TYPE_COST) //as List<MyCategory>
+        val listCategory = myDbManager.fromCategories(MyConstants.CATEGORY_TYPE_INCOME) //as List<MyCategory>
         val spinnerAdapter = MySpinnerImageWithTextArrayAdapter(this, listCategory)
         spinnerCategory.adapter = spinnerAdapter
     }
@@ -202,7 +205,7 @@ class CostEditActivity : AppCompatActivity() {
     }
 
     // Обработчик события для выбора даты
-    private var dateListener = OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+    private var dateListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         dateAndTime[Calendar.YEAR] = year
         dateAndTime[Calendar.MONTH] = monthOfYear
         dateAndTime[Calendar.DAY_OF_MONTH] = dayOfMonth
@@ -213,7 +216,7 @@ class CostEditActivity : AppCompatActivity() {
     // И устанавливает дату в переменную с нужным форматом,
     // где milliseconds - время в миллисекундах
     private fun setDateTime(milliseconds : Long = 0) {
-        editTextDateCost.setText(
+        editTextDateIncome.setText(
             DateUtils.formatDateTime(
                 this,
                 milliseconds,
@@ -244,7 +247,7 @@ class CostEditActivity : AppCompatActivity() {
 
     // Обновить текстовые поля
     private fun refreshFields(){
-        editTextCostComment.setText("")
-        editTextCostSum.setText("")
+        editTextIncomeComment.setText("")
+        editTextIncomeSum.setText("")
     }
 }

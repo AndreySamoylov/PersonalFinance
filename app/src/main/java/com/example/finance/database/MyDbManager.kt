@@ -313,7 +313,7 @@ class MyDbManager(private val context: Context) {
     fun fromCosts(categoryID: Long) : List<MyCost>{
         val tempList: MutableList<MyCost> = ArrayList()
 
-        val selection = "${MyDatabaseConstants.ID_CATEGORY_COST} >= ?"
+        val selection = "${MyDatabaseConstants.ID_CATEGORY_COST} = ?"
         val selectionArgs = arrayOf(categoryID.toString())
 
         val cursor = sqLiteDatabase!!.query(
@@ -342,7 +342,7 @@ class MyDbManager(private val context: Context) {
 
     // Метод позвращает сумму покупок по определенной категории,
     // где category - идентификатор категория, по которой нужно делать выборку
-    fun getSumByCategory(categoryID: Long) : Double{
+    fun getSumCostByCategory(categoryID: Long) : Double{
         var allSum : Double = 0.0
 
         val selection = "${MyDatabaseConstants.ID_CATEGORY_COST} = ?"
@@ -364,7 +364,7 @@ class MyDbManager(private val context: Context) {
     // Метод позвращает сумму покупок по определенной категории,
     // где category - идентификатор категория, по которой делается выборка,
     // а accountID - идентификатор аккаунта. по которому делается выборка
-    fun getSumByCategory(categoryID: Long, accountID : Long) : Double{
+    fun getSumCostByCategory(categoryID: Long, accountID : Long) : Double{
         var allSum : Double = 0.0
 
         val selection = "${MyDatabaseConstants.ID_CATEGORY_COST} = ? AND ${MyDatabaseConstants.ID_ACCOUNT_COST} = ?"
@@ -384,9 +384,34 @@ class MyDbManager(private val context: Context) {
     }
 
     // Метод позвращает сумму покупок по определенной категории,
+    // accountID - идентификатор аккаунта. по которому делается выборка
+    // initialDate и finalDate промежуток дат, между которыми делается выборка
+    fun getSumCostByCategory(categoryID: Long, initialDate: String, finalDate: String) : Double{
+        var allSum : Double = 0.0
+
+        val selection = "${MyDatabaseConstants.ID_CATEGORY_COST} = ? AND " +
+                "${MyDatabaseConstants.DATE_COST} >= ? AND " +
+                "${MyDatabaseConstants.DATE_COST} <= ?"
+        val selectionArgs = arrayOf(categoryID.toString(),  initialDate, finalDate)
+
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_COSTS, null, selection, selectionArgs,
+            null, null, null
+        )
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val sum =
+                cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_COST))
+            allSum += sum
+        }
+        cursor.close()
+        return allSum
+    }
+
+    // Метод позвращает сумму покупок по определенной категории,
     // где category - идентификатор категория, по которой делается выборка,
-    // а accountID - идентификатор аккаунта. по которому делается выборка
-    fun getSumByCategory(categoryID: Long, accountID : Long, initialDate: String, finalDate: String) : Double{
+    // accountID - идентификатор аккаунта. по которому делается выборка,
+    // initialDate и finalDate промежуток дат, между которыми делается выборка
+    fun getSumCostByCategory(categoryID: Long, accountID : Long, initialDate: String, finalDate: String) : Double{
         var allSum : Double = 0.0
 
         val selection = "${MyDatabaseConstants.ID_CATEGORY_COST} = ? AND " +
@@ -486,15 +511,17 @@ class MyDbManager(private val context: Context) {
     }
 
     fun updateInIncome(income: MyIncome) {
-        sqLiteDatabase!!.execSQL(
-            ("UPDATE " + MyDatabaseConstants.TABLE_INCOME +
-                    " SET " + MyDatabaseConstants.SUM_INCOME + "=" + income._sum +
-                    " " + MyDatabaseConstants.DATE_INCOME + "='" + income._date_income + "'" +
-                    " " + MyDatabaseConstants.COMMENT_INCOME + "='" + income._comment + "'" +
-                    " " + MyDatabaseConstants.ID_ACCOUNT_INCOME + "=" + income._account +
-                    " " + MyDatabaseConstants.ID_CATEGORY_INCOME + "=" + income._category +
-                    " WHERE " + MyDatabaseConstants.ID_INCOME + "=" + income._id + ";")
-        )
+        val values = ContentValues().apply {
+            put(MyDatabaseConstants.SUM_INCOME, income._sum)
+            put(MyDatabaseConstants.DATE_INCOME, income._date_income)
+            put(MyDatabaseConstants.COMMENT_INCOME, income._comment)
+            put(MyDatabaseConstants.ID_ACCOUNT_INCOME, income._account)
+            put(MyDatabaseConstants.ID_CATEGORY_INCOME, income._category)
+        }
+        val selection = "${MyDatabaseConstants.ID_INCOME} = ?"
+        val selectionArgs = arrayOf(income._id.toString())
+
+        sqLiteDatabase?.update(MyDatabaseConstants.TABLE_INCOME, values, selection, selectionArgs)
     }
 
     fun deleteFromIncome(_id: Long) {
@@ -530,4 +557,196 @@ class MyDbManager(private val context: Context) {
             cursor.close()
             return tempList
         }
+
+    // Метод позвращает список поступлений, который находяться в базе данных, где
+    // category - идентификатор категория, по которой нужно делать выборку
+    fun fromIncome(categoryID: Long) : List<MyIncome>{
+        val tempList: MutableList<MyIncome> = ArrayList()
+
+        val selection = "${MyDatabaseConstants.ID_CATEGORY_INCOME} = ?"
+        val selectionArgs = arrayOf(categoryID.toString())
+
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_INCOME, null, selection, selectionArgs,
+            null, null, null
+        )
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val id =
+                cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_INCOME))
+            @SuppressLint("Range") val sum =
+                cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_INCOME))
+            @SuppressLint("Range") val dateIncome =
+                cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.DATE_INCOME))
+            @SuppressLint("Range") val comment =
+                cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.COMMENT_INCOME))
+            @SuppressLint("Range") val idAccount =
+                cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_ACCOUNT_INCOME))
+            @SuppressLint("Range") val idCategory =
+                cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_CATEGORY_INCOME))
+            val income = MyIncome(id, sum, dateIncome, comment, idAccount, idCategory)
+            tempList.add(income)
+        }
+        cursor.close()
+        return tempList
+    }
+
+    // Метод позвращает список поступлений, который находяться в базе данных, где
+    // initialDate - дата, от которой нужно делать выборку, а finalDate - дата, до которой нужно делать выборку
+    fun fromIncome(initialDate : String, finalDate : String) : List<MyIncome>{
+        val tempList: MutableList<MyIncome> = ArrayList()
+
+        val selection = "${MyDatabaseConstants.DATE_INCOME} >= ? AND ${MyDatabaseConstants.DATE_INCOME} <= ?"
+        val selectionArgs = arrayOf(initialDate, finalDate)
+        val sortOrder = "${MyDatabaseConstants.DATE_INCOME} DESC"
+
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_INCOME, null, selection, selectionArgs,
+            null, null, sortOrder
+        )
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val id =
+                cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_INCOME))
+            @SuppressLint("Range") val sum =
+                cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_INCOME))
+            @SuppressLint("Range") val dateIncome =
+                cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.DATE_INCOME))
+            @SuppressLint("Range") val comment =
+                cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.COMMENT_INCOME))
+            @SuppressLint("Range") val idAccount =
+                cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_ACCOUNT_INCOME))
+            @SuppressLint("Range") val idCategory =
+                cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_CATEGORY_INCOME))
+            val income = MyIncome(id, sum, dateIncome, comment, idAccount, idCategory)
+            tempList.add(income)
+        }
+        cursor.close()
+        return tempList
+    }
+
+    // Метод позвращает список поступлений, который находяться в базе данных, где
+    // initialDate - дата, от которой нужно делать выборку; finalDate - дата, до которой нужно делать выборку,
+    // а accountID - идентификатор счета. по которому будет сделана выборка
+    fun fromIncome(initialDate : String, finalDate : String, accountID : Long) : List<MyIncome>{
+        val tempList: MutableList<MyIncome> = ArrayList()
+
+        val selection = "${MyDatabaseConstants.DATE_INCOME} >= ? AND ${MyDatabaseConstants.DATE_INCOME} <= ? AND ${MyDatabaseConstants.ID_ACCOUNT_INCOME} = ?"
+        val selectionArgs = arrayOf(initialDate, finalDate, accountID.toString())
+        val sortOrder = "${MyDatabaseConstants.DATE_INCOME} DESC"
+
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_INCOME, null, selection, selectionArgs,
+            null, null, sortOrder
+        )
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val id =
+                cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_INCOME))
+            @SuppressLint("Range") val sum =
+                cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_INCOME))
+            @SuppressLint("Range") val dateIncome =
+                cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.DATE_INCOME))
+            @SuppressLint("Range") val comment =
+                cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.COMMENT_INCOME))
+            @SuppressLint("Range") val idAccount =
+                cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_ACCOUNT_INCOME))
+            @SuppressLint("Range") val idCategory =
+                cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_CATEGORY_INCOME))
+            val income = MyIncome(id, sum, dateIncome, comment, idAccount, idCategory)
+            tempList.add(income)
+        }
+        cursor.close()
+        return tempList
+    }
+
+    // Метод позвращает сумму поступлений по определенной категории,
+    // где category - идентификатор категория, по которой нужно делать выборку
+    fun getSumIncomeByCategory(categoryID: Long) : Double{
+        var allSum : Double = 0.0
+
+        val selection = "${MyDatabaseConstants.ID_CATEGORY_INCOME} = ?"
+        val selectionArgs = arrayOf(categoryID.toString())
+
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_INCOME, null, selection, selectionArgs,
+            null, null, null
+        )
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val sum =
+                cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_INCOME))
+            allSum += sum
+        }
+        cursor.close()
+        return allSum
+    }
+
+    // Метод позвращает сумму поступлений по определенной категории,
+    // где category - идентификатор категория, по которой делается выборка,
+    // а accountID - идентификатор аккаунта. по которому делается выборка
+    fun getSumIncomeByCategory(categoryID: Long, accountID : Long) : Double{
+        var allSum : Double = 0.0
+
+        val selection = "${MyDatabaseConstants.ID_CATEGORY_INCOME} = ? AND ${MyDatabaseConstants.ID_ACCOUNT_INCOME} = ?"
+        val selectionArgs = arrayOf(categoryID.toString(), accountID.toString())
+
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_INCOME, null, selection, selectionArgs,
+            null, null, null
+        )
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val sum =
+                cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_INCOME))
+            allSum += sum
+        }
+        cursor.close()
+        return allSum
+    }
+
+    // Метод позвращает сумму поступлений по определенной категории,
+    // accountID - идентификатор аккаунта. по которому делается выборка
+    // initialDate и finalDate промежуток дат, между которыми делается выборка
+    fun getSumIncomeByCategory(categoryID: Long, initialDate: String, finalDate: String) : Double{
+        var allSum : Double = 0.0
+
+        val selection = "${MyDatabaseConstants.ID_CATEGORY_INCOME} = ? AND " +
+                "${MyDatabaseConstants.DATE_INCOME} >= ? AND " +
+                "${MyDatabaseConstants.DATE_INCOME} <= ?"
+        val selectionArgs = arrayOf(categoryID.toString(),  initialDate, finalDate)
+
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_INCOME, null, selection, selectionArgs,
+            null, null, null
+        )
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val sum =
+                cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_INCOME))
+            allSum += sum
+        }
+        cursor.close()
+        return allSum
+    }
+
+    // Метод позвращает сумму поступлений по определенной категории,
+    // где category - идентификатор категория, по которой делается выборка,
+    // accountID - идентификатор аккаунта. по которому делается выборка,
+    // initialDate и finalDate промежуток дат, между которыми делается выборка
+    fun getSumIncomeByCategory(categoryID: Long, accountID : Long, initialDate: String, finalDate: String) : Double{
+        var allSum : Double = 0.0
+
+        val selection = "${MyDatabaseConstants.ID_CATEGORY_INCOME} = ? AND " +
+                "${MyDatabaseConstants.ID_ACCOUNT_INCOME} = ? AND " +
+                "${MyDatabaseConstants.DATE_INCOME} >= ? AND " +
+                "${MyDatabaseConstants.DATE_INCOME} <= ?"
+        val selectionArgs = arrayOf(categoryID.toString(), accountID.toString(), initialDate, finalDate)
+
+        val cursor = sqLiteDatabase!!.query(
+            MyDatabaseConstants.TABLE_INCOME, null, selection, selectionArgs,
+            null, null, null
+        )
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") val sum =
+                cursor.getDouble(cursor.getColumnIndex(MyDatabaseConstants.SUM_INCOME))
+            allSum += sum
+        }
+        cursor.close()
+        return allSum
+    }
 }

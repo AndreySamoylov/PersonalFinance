@@ -79,6 +79,7 @@ class CostFragment : Fragment() {
 
         spinnerAccounts.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
                 createPieChart()
             }
 
@@ -111,10 +112,7 @@ class CostFragment : Fragment() {
         //Назначение слушателя для текстовых полей
         editTextInitialDateCost.setOnClickListener(onEditTextClickListener)
         editTextFinalDateCost.setOnClickListener(onEditTextClickListener)
-    }
 
-    override fun onStart() {
-        super.onStart()
         myDbManager.openDatabase()
 
         // Инициализация календаря
@@ -152,15 +150,16 @@ class CostFragment : Fragment() {
 
 
         // Создание адаптера для волчка выбора счетов
+        val accountList : ArrayList<MyAccount> = arrayListOf(MyAccount(0, "Все счета"))
+        accountList.addAll(myDbManager.fromAccounts)
+
         val adapterAccounts = ArrayAdapter(
             currentContext,
             R.layout.account_item,
             R.id.textViewItemAccountName,
-            myDbManager.fromAccounts
+            accountList
         )
         spinnerAccounts.adapter = adapterAccounts
-
-        createPieChart()
 
         myDbManager.closeDatabase()
     }
@@ -198,7 +197,11 @@ class CostFragment : Fragment() {
         var allSum = 0f // Сумма всех расходов
         val categoryList = myDbManager.fromCategories // Список категорий
         for (category in categoryList){
-            val sum = myDbManager.getSumByCategory(category._id, selectedAccount._id, initialDate, finalDate).roundToInt() // Сумма расхода по категории
+            // Если выбран 1-ый элемент волчка, то есть нужно делать выборку из всех счетов
+            // Иначе сделать выборку из одного выбранного счёта
+            val sum = if (selectedAccount._id == (0).toLong()) myDbManager.getSumCostByCategory(category._id, initialDate, finalDate).roundToInt() // Сумма расхода по категории
+            else myDbManager.getSumCostByCategory(category._id, selectedAccount._id, initialDate, finalDate).roundToInt() // Сумма расхода по категории
+
             if(sum > 0) { // Если сумма больше нуля добавить в список
                 val pieEntry = PieEntry(sum.toFloat(), category._name)
                 pieEntriesAll.add(pieEntry)
@@ -254,7 +257,6 @@ class CostFragment : Fragment() {
         dateAndTime[Calendar.DAY_OF_MONTH] = dayOfMonth
         setDateTimeFinal(dateAndTime.timeInMillis)
     }
-
 
     private fun setDateTimeInitial(milliseconds : Long = 0) {
         editTextInitialDateCost.setText(

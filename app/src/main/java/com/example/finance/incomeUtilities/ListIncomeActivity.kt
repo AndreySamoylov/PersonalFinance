@@ -1,5 +1,6 @@
-package com.example.finance.costUtilities
+package com.example.finance.incomeUtilities
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -7,7 +8,6 @@ import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.MenuItem
 import android.view.View
-import android.view.View.OnClickListener
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
@@ -18,18 +18,17 @@ import com.example.finance.MyConstants
 import com.example.finance.R
 import com.example.finance.database.MyDbManager
 import com.example.finance.items.MyAccount
-import com.example.finance.items.MyCost
-import java.util.Date
-import java.util.Calendar
+import com.example.finance.items.MyIncome
+import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
 
-class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
+class ListIncomeActivity : AppCompatActivity(), MyIncomeAdapter.Listener {
 
-    private val adapter = MyCostAdapter(this, this)
+    private val adapter = MyIncomeAdapter(this, this)
 
-    private lateinit var editTextInitialDateCost : EditText
+    private lateinit var editTextInitialDateIncome : EditText
     private lateinit var initialDate : String
-    private lateinit var editTextFinalDateCost : EditText
+    private lateinit var editTextFinalDateIncome : EditText
     private lateinit var finalDate : String
     private lateinit var spinnerAccounts : Spinner
 
@@ -37,34 +36,35 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
 
     private var dateAndTime = Calendar.getInstance()
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_list_cost)
+        setContentView(R.layout.activity_list_income)
 
         myDbManager = MyDbManager(this)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        editTextInitialDateCost = findViewById(R.id.editTextInitialDateCost)
-        editTextFinalDateCost = findViewById(R.id.editTextFinalDateCost)
-        spinnerAccounts = findViewById(R.id.spinnerAccountOnShowCost)
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewCosts)
+        editTextInitialDateIncome = findViewById(R.id.editTextInitialDateIncome)
+        editTextFinalDateIncome = findViewById(R.id.editTextFinalDateIncome)
+        spinnerAccounts = findViewById(R.id.spinnerAccountOnShowIncome)
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewIncome)
 
         // Создание слушателя нажатий
-        val onEditTextClickListener = OnClickListener { view ->
-            when (view.id){
-                R.id.editTextInitialDateCost ->{
+        val onEditTextClickListener = View.OnClickListener { view ->
+            when (view.id) {
+                R.id.editTextInitialDateIncome -> {
                     DatePickerDialog(
-                        this@ListCostActivity, dateListenerDateFrom,
+                        this@ListIncomeActivity, dateListenerDateFrom,
                         dateAndTime.get(Calendar.YEAR),
                         dateAndTime.get(Calendar.MONTH),
                         dateAndTime.get(Calendar.DAY_OF_MONTH)
                     ).show()
                     setRecycleViewAdaper()
                 }
-                R.id.editTextFinalDateCost ->{
+                R.id.editTextFinalDateIncome -> {
                     DatePickerDialog(
-                        this@ListCostActivity, dateListenerDateBefore,
+                        this@ListIncomeActivity, dateListenerDateBefore,
                         dateAndTime.get(Calendar.YEAR),
                         dateAndTime.get(Calendar.MONTH),
                         dateAndTime.get(Calendar.DAY_OF_MONTH)
@@ -74,8 +74,8 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
             }
         }
         //Назначение слушателя для текстовых полей
-        editTextInitialDateCost.setOnClickListener(onEditTextClickListener)
-        editTextFinalDateCost.setOnClickListener(onEditTextClickListener)
+        editTextInitialDateIncome.setOnClickListener(onEditTextClickListener)
+        editTextFinalDateIncome.setOnClickListener(onEditTextClickListener)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
@@ -139,6 +139,13 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
         myDbManager.closeDatabase()
     }
 
+    override fun onIncomeClick(myIncome: MyIncome) {
+        val intent = Intent(this@ListIncomeActivity, IncomeEditActivity::class.java)
+        intent.putExtra(MyConstants.STATE, MyConstants.STATE_CHANGE_OR_DELETE)
+        intent.putExtra(MyConstants.KEY_MY_INCOME, myIncome)
+        startActivity(intent)
+    }
+
     override fun onResume() {
         super.onResume()
         myDbManager.openDatabase()
@@ -154,13 +161,6 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (android.R.id.home == item.itemId) finish()
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onCostClick(myCost: MyCost) {
-        val intent = Intent(this@ListCostActivity, CostEditActivity::class.java)
-        intent.putExtra(MyConstants.STATE, MyConstants.STATE_CHANGE_OR_DELETE)
-        intent.putExtra(MyConstants.KEY_MY_COST, myCost)
-        startActivity(intent)
     }
 
     // Обработчик события для выбора даты "от которой нужно считать"
@@ -180,7 +180,7 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
     }
 
     private fun setDateTimeInitial(milliseconds : Long = 0) {
-        editTextInitialDateCost.setText(
+        editTextInitialDateIncome.setText(
             DateUtils.formatDateTime(
                 this,
                 milliseconds,
@@ -207,7 +207,7 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
     }
 
     private fun setDateTimeFinal(milliseconds : Long = 0) {
-        editTextFinalDateCost.setText(
+        editTextFinalDateIncome.setText(
             DateUtils.formatDateTime(
                 this,
                 milliseconds,
@@ -236,8 +236,8 @@ class ListCostActivity : AppCompatActivity(), MyCostAdapter.Listener {
     private fun setRecycleViewAdaper(){
         val account : MyAccount = spinnerAccounts.selectedItem as MyAccount
         //Если выбран элемент с id ноль (т.е все счета)), то вывести данные из всех счетов, иначе из выбранного
-        val list : List<MyCost> = if (account._id  == (0).toLong())  myDbManager.fromCosts(initialDate, finalDate)
-        else myDbManager.fromCosts(initialDate, finalDate, account._id)
-        adapter.addAllCostList(list)
+        val list : List<MyIncome> = if (account._id  == (0).toLong())  myDbManager.fromIncome(initialDate, finalDate)
+        else myDbManager.fromIncome(initialDate, finalDate, account._id)
+        adapter.addAllIncomeList(list)
     }
 }

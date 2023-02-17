@@ -11,6 +11,7 @@ import com.example.finance.R
 import com.example.finance.database.MyDbManager
 import com.example.finance.databinding.CostItemBinding
 import com.example.finance.items.MyCost
+import java.text.DecimalFormat
 
 
 class MyCostAdapter(val listener: Listener, val context: Context) : RecyclerView.Adapter<MyCostAdapter.MyCostHolder>() {
@@ -31,8 +32,10 @@ class MyCostAdapter(val listener: Listener, val context: Context) : RecyclerView
             myDbManager.closeDatabase()
 
             val costDateText = "${itemView.context.resources.getText(R.string.date)} ${myCost._date_cost}"
-            val costSumText = "${itemView.context.resources.getText(R.string.sum)} ${myCost._sum}"
-
+            //Округление до 2-ух знаков полсе запятой
+            val decimalFormat = DecimalFormat("##0.00")
+            val strSum: String = decimalFormat.format(myCost._sum)
+            val costSumText = "${itemView.context.resources.getText(R.string.sum)} $strSum"
 
             itemCostCategory.setImageResource(category!!._image)
             itemCostCategory.setBackgroundColor(Color.parseColor(category._color))
