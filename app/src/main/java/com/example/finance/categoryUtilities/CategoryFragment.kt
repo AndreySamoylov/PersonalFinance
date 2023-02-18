@@ -18,6 +18,8 @@ import com.example.finance.items.MyCategory
 
 class CategoryFragment : Fragment(), MyCategoryAdapter.Listener {
 
+    private lateinit var radioButtonCategoryCost : RadioButton
+
     private val adapter = MyCategoryAdapter(this)
 
     private lateinit var myDbManager : MyDbManager
@@ -41,6 +43,7 @@ class CategoryFragment : Fragment(), MyCategoryAdapter.Listener {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycleviewCategories)
         recyclerView.layoutManager = GridLayoutManager(view.context, 3)
         recyclerView.adapter = adapter
+        radioButtonCategoryCost  = view.findViewById(R.id.radioButtonShowCategoryCost)
 
         view.findViewById<Button>(R.id.buttonGoToEditCategory).setOnClickListener {
             val intent = Intent(view.context, CategoryEditActivity::class.java)
@@ -48,16 +51,20 @@ class CategoryFragment : Fragment(), MyCategoryAdapter.Listener {
             startActivity(intent)
         }
 
-        view.findViewById<RadioButton>(R.id.radioButtonShowCategoryCost).setOnCheckedChangeListener { _, isChecked ->
+        radioButtonCategoryCost.setOnCheckedChangeListener { _, isChecked ->
             // Если выбрана радиокнопка "расход"
             // Иначе выбрана кнопка "доход"
             if (isChecked){
+                myDbManager.openDatabase()
                 val list : List<MyCategory> = myDbManager.fromCategories(MyConstants.CATEGORY_TYPE_COST)
                 adapter.addAllCategoryList(list)
+                myDbManager.closeDatabase()
             }
             else{
+                myDbManager.openDatabase()
                 val list : List<MyCategory> = myDbManager.fromCategories(MyConstants.CATEGORY_TYPE_INCOME)
                 adapter.addAllCategoryList(list)
+                myDbManager.closeDatabase()
             }
         }
     }
@@ -68,6 +75,7 @@ class CategoryFragment : Fragment(), MyCategoryAdapter.Listener {
 
         val list : List<MyCategory> = myDbManager.fromCategories(MyConstants.CATEGORY_TYPE_COST)
         adapter.addAllCategoryList(list)
+        radioButtonCategoryCost.isChecked = true
 
         myDbManager.closeDatabase()
     }
