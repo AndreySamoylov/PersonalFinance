@@ -26,7 +26,7 @@ import com.example.finance.items.MyCategory
 class CategoryEditActivity : AppCompatActivity() {
 
     private lateinit var buttonSetColorCategory : Button
-    private var currentColor: String = "#FFFFFFFF"
+    private var currentColor: String = "#FFFFFF"
     private lateinit var buttonAddOrChangeCategory : Button
     private lateinit var buttonDeleteCategoryOrBack : Button
     private lateinit var editTextCategpryName: EditText

@@ -35,9 +35,11 @@
 
     <ImageView
         android:id="@+id/imageViewCategoryImage"
-        android:layout_width="260dp"
-        android:layout_height="163dp"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radioGroupCategoryType"
@@ -56,12 +58,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSetColorCategory" />
 
     <Button
         android:id="@+id/buttonAddOrChangeCategory"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -70,15 +75,19 @@
         android:id="@+id/buttonDeleteCategoryOrBack"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <RadioGroup
         android:id="@+id/radioGroupCategoryType"
-        android:layout_width="263dp"
+        android:layout_width="0dp"
         android:layout_height="33dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="32dp"
         android:checkedButton="@id/radioButtonCategoryTypeCost"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"

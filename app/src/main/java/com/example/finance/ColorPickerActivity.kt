@@ -34,7 +34,7 @@ class ColorPickerActivity : AppCompatActivity() {
 
             override fun afterTextChanged(p0: Editable?) {
                 binding.colorR.progress = Integer.parseInt(p0!!.substring(0..1), 16)
-                binding.colorG.progress = Integer.parseInt(p0.substring(2..3), 16)
+                binding.colorG.progress = Integer.parseInt(p0.substring(2..3),  16)
                 binding.colorB.progress = Integer.parseInt(p0.substring(4..5), 16)
             }
         })

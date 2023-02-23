@@ -32,7 +32,7 @@
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/inputSum"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.524"
         app:layout_constraintStart_toStartOf="parent"

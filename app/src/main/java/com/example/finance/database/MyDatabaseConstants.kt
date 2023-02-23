@@ -2,7 +2,7 @@ package com.example.finance.database
 
 object MyDatabaseConstants{
     const val DB_NAME = "finance.db"
-    const val DB_VERSION = 24
+    const val DB_VERSION = 25
 
     //Таблица счета
     const val TABLE_ACCOUNTS = "accounts"
@@ -41,7 +41,7 @@ object MyDatabaseConstants{
     const val ID_CATEGORY_COST = "id_category"
     const val TABLE_COSTS_CREATE = "CREATE TABLE IF NOT EXISTS " + TABLE_COSTS +
             " (" + ID_COST + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            SUM_COST + " INTEGER NOT NULL, " +
+            SUM_COST + " REAL NOT NULL, " +
             DATE_COST + " TEXT NOT NULL, " +
             ID_ACCOUNT_COST + " INTEGER NOT NULL, " +
             COMMENT_COST + " TEXT, " +
@@ -61,7 +61,7 @@ object MyDatabaseConstants{
     const val ID_CATEGORY_INCOME = "id_category"
     const val TABLE_INCOME_CREATE = "CREATE TABLE IF NOT EXISTS " + TABLE_INCOME +
             " (" + ID_INCOME + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            SUM_INCOME + " INTEGER NOT NULL, " +
+            SUM_INCOME + " REAL NOT NULL, " +
             DATE_INCOME + " TEXT NOT NULL, " +
             ID_ACCOUNT_INCOME + " INTEGER NOT NULL, " +
             COMMENT_INCOME + " TEXT, " +

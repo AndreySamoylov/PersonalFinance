@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
-    <item android:title="category 1">
+    <item android:title="">
         <menu>
             <item android:id="@+id/item_read_from_cvs" android:title="@string/readFromCvsFile"/>
         </menu>

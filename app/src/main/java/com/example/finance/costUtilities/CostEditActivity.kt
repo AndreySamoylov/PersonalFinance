@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.os.Bundle
 import android.text.format.DateUtils
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View.OnClickListener
 import android.widget.ArrayAdapter
@@ -20,6 +21,9 @@ import com.example.finance.database.MyDbManager
 import com.example.finance.items.MyAccount
 import com.example.finance.items.MyCategory
 import com.example.finance.items.MyCost
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanIntentResult
+import com.journeyapps.barcodescanner.ScanOptions
 import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -196,9 +200,17 @@ class CostEditActivity : AppCompatActivity() {
         myDbManager.closeDatabase()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        myDbManager.closeDatabase()
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.cost_edit_toolbar_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId){
+            android.R.id.home -> finish()
+            R.id.costEditMenuScanner -> barcodeLauncher.launch(ScanOptions())
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     // Обработчик события для выбора даты
@@ -237,14 +249,54 @@ class CostEditActivity : AppCompatActivity() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (android.R.id.home == item.itemId) finish()
-        return super.onOptionsItemSelected(item)
-    }
-
     // Обновить текстовые поля
     private fun refreshFields(){
         editTextCostComment.setText("")
         editTextCostSum.setText("")
+    }
+
+    // Сканер
+    private val barcodeLauncher = registerForActivityResult(
+        ScanContract()
+    ) { result: ScanIntentResult ->
+        if (result.contents == null) {
+            Toast.makeText( this@CostEditActivity, R.string.canceled, Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(
+                this@CostEditActivity,
+                R.string.scanned,
+                Toast.LENGTH_LONG
+            ).show()
+
+            //Обработка строки
+
+            //Получение даты
+            val calendar: Calendar = Calendar.getInstance()
+            val year = result.contents.substring(2, 6).toInt()
+            val month = result.contents.substring(6, 8).toInt()
+            val dayOfMonth = result.contents.substring(8, 10).toInt()
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.DAY_OF_MONTH, month - 1)
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            setDateTime(calendar.timeInMillis)
+
+            // Получение суммы
+
+            var sIndex = 0 // Индекс буквы 's'
+            var pointIndex = 0 //Индекс точки '.'
+            for (i in 0 until result.contents.length){
+                if (result.contents.elementAt(i) == 's') {
+                    sIndex = i
+                }
+                if (result.contents.elementAt(i) == '.'){
+                    pointIndex = i
+                }
+            }
+
+            val sum = result.contents.substring(sIndex + 2, pointIndex + 3)
+            editTextCostSum.setText(sum)
+
+
+        }
     }
 }
