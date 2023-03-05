@@ -68,6 +68,7 @@ class ReadCvsActivity : AppCompatActivity() {
         super.onDestroy()
         myDbManager.closeDatabase()
     }
+
     private val getContent =  registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         // Handle the returned Uri
         var inputStream: InputStream?

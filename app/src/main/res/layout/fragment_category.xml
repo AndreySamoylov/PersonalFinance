@@ -13,11 +13,11 @@
 
         <Button
             android:id="@+id/buttonGoToEditCategory"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/add"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,26 +28,25 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttonGoToEditCategory"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup"
             app:layout_constraintVertical_bias="0.0" />
 
         <RadioGroup
+            android:id="@+id/radioGroup"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="32dp"
             android:checkedButton="@id/radioButtonShowCategoryCost"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/recycleviewCategories"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/buttonGoToEditCategory"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonGoToEditCategory">
 
             <RadioButton
                 android:id="@+id/radioButtonShowCategoryCost"

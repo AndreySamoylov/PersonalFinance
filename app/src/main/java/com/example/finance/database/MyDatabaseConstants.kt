@@ -23,7 +23,7 @@ object MyDatabaseConstants{
     const val UNDELETEBLE_CATEGORY = "undeletable"
     const val TABLE_CATEGORIES_CREATE = "CREATE TABLE IF NOT EXISTS " + TABLE_CATEGORIES +
             " (" + ID_CATEGORY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            NAME_CATEGORY + " TEXT UNIQUE NOT NULL, " +
+            NAME_CATEGORY + " TEXT NOT NULL, " +
             COLOR_CATEGORY + " TEXT, " +
             IMAGE_CATEGORY + " TEXT," +
             TYPE_CATEGORY + " INTEGER," +
