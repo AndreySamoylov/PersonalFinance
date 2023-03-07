@@ -22,7 +22,6 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
-import kotlinx.coroutines.*
 import java.util.*
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
@@ -78,8 +77,8 @@ class IncomeFragment : Fragment() {
         }
 
         // Создание слушателя нажатий
-        val onEditTextClickListener = View.OnClickListener { view ->
-            when (view.id) {
+        val onEditTextClickListener = View.OnClickListener {
+            when (it.id) {
                 R.id.buttonGoToEditIncome -> {
                     val intent = Intent(currentContext, IncomeEditActivity::class.java)
                     intent.putExtra(MyConstants.STATE, MyConstants.STATE_ADD)
@@ -114,9 +113,8 @@ class IncomeFragment : Fragment() {
         editTextFinalDateCost.setOnClickListener(onEditTextClickListener)
     }
 
-    override fun onStart() {
-        super.onStart()
-
+    override fun onResume() {
+        super.onResume()
         myDbManager.openDatabase()
 
         // Создание адаптера для волчка выбора счетов
@@ -131,7 +129,6 @@ class IncomeFragment : Fragment() {
         )
         spinnerAccounts.adapter = adapterAccounts
 
-        myDbManager.closeDatabase()
         // Инициализация календаря
         val calendar: Calendar = Calendar.getInstance()
         calendar.timeInMillis = Date().time.milliseconds.inWholeMilliseconds
@@ -166,6 +163,11 @@ class IncomeFragment : Fragment() {
         setDateTimeInitial(calendar.timeInMillis)
     }
 
+    override fun onPause() {
+        super.onPause()
+        myDbManager.closeDatabase()
+    }
+
     companion object{
         @JvmStatic
         fun newInstance() = IncomeFragment()
@@ -173,8 +175,6 @@ class IncomeFragment : Fragment() {
 
     private fun createPieChart(){
         // *************** Открытие базы данных
-        myDbManager.openDatabase()
-
         lateinit var selectedAccount : MyAccount
         try{
             selectedAccount = spinnerAccounts.selectedItem as MyAccount // Выбранные счёт
@@ -198,9 +198,6 @@ class IncomeFragment : Fragment() {
             }
             allSum += sum
         }
-        // *************** Закрытие базы данных
-        myDbManager.closeDatabase()
-
 
         val pieEntriesSelective = ArrayList<PieEntry>() // Список который будет добавлен в диаграмму
         var otherSum = 0f // Сумма остальных категорий

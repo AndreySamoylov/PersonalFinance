@@ -295,8 +295,6 @@ class CostEditActivity : AppCompatActivity() {
 
             val sum = result.contents.substring(sIndex + 2, pointIndex + 3)
             editTextCostSum.setText(sum)
-
-
         }
     }
 }

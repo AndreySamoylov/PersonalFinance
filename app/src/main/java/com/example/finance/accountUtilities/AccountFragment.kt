@@ -19,6 +19,8 @@ class AccountFragment : Fragment(), MyAccountAdapter.Listener {
 
     private val adapter = MyAccountAdapter(this)
 
+    private lateinit var myDbManager : MyDbManager
+
     private lateinit var currentContext: Context
 
     override fun onCreateView(
@@ -27,6 +29,7 @@ class AccountFragment : Fragment(), MyAccountAdapter.Listener {
     ): View? {
         // Inflate the layout for this fragment
 
+        myDbManager = MyDbManager(inflater.context)
         currentContext = inflater.context
 
         return inflater.inflate(R.layout.fragment_account, container, false)
@@ -46,13 +49,16 @@ class AccountFragment : Fragment(), MyAccountAdapter.Listener {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        val myDbManager = MyDbManager(currentContext)
-
+    override fun onResume() {
+        super.onResume()
         myDbManager.openDatabase()
-        val list : List<MyAccount> = myDbManager.fromAccounts as List<MyAccount>
+
+        val list : List<MyAccount> = myDbManager.fromAccounts
         adapter.addAllAccountList(list)
+    }
+
+    override fun onPause() {
+        super.onPause()
         myDbManager.closeDatabase()
     }
 

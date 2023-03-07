@@ -17,4 +17,9 @@ object MyConstants {
     const val CATEGORY_TYPE_INCOME : Byte = 1
     const val CATEGORY_UNDELEDATBLE_FALSE : Byte = 0
     const val CATEGORY_UNDELEDATBLE_TRUE : Byte = 1
+    const val USERS : String = "users"
+    const val LIST_ACCOUNT : String = "listAccount"
+    const val LIST_CATEGORY : String = "listCategory"
+    const val LIST_COST : String = "listCost"
+    const val LIST_INCOME : String = "listIncome"
 }

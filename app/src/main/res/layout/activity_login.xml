@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+
+    <TextView
+        android:id="@+id/textViewLoginActivityYouEnterAs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="@string/youEnterAs"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextLoginActivityPassword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="@+id/editTextLoginActivityEmail"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/editTextLoginActivityEmail"
+        app:layout_constraintTop_toBottomOf="@+id/editTextLoginActivityEmail" />
+
+    <EditText
+        android:id="@+id/editTextLoginActivityEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:ems="10"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewLoginActivityYouEnterAs" />
+
+    <Button
+        android:id="@+id/buttonLoginActivitySignUp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/signUp"
+        app:layout_constraintEnd_toEndOf="@+id/editTextLoginActivityPassword"
+        app:layout_constraintStart_toStartOf="@+id/editTextLoginActivityPassword"
+        app:layout_constraintTop_toBottomOf="@+id/editTextLoginActivityPassword" />
+
+    <Button
+        android:id="@+id/buttonLoginActivitySignIn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/signIn"
+        app:layout_constraintEnd_toEndOf="@+id/buttonLoginActivitySignUp"
+        app:layout_constraintStart_toStartOf="@+id/buttonLoginActivitySignUp"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLoginActivitySignUp" />
+
+    <Button
+        android:id="@+id/buttonLoginActivitySignOut"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/signOut"
+        app:layout_constraintEnd_toEndOf="@+id/buttonLoginActivitySignIn"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/buttonLoginActivitySignIn"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLoginActivitySignIn" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

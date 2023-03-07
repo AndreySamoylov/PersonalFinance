@@ -4,7 +4,14 @@
     tools:showIn="navigation_view">
     <item android:title="">
         <menu>
-            <item android:id="@+id/item_read_from_cvs" android:title="@string/readFromCvsFile"/>
+            <item android:id="@+id/item_enter_account" android:title="@string/enterAccount" android:icon="@drawable/baseline_door_front_24"/>
+        </menu>
+    </item>
+    <item android:title="">
+        <menu>
+            <item android:id="@+id/item_save_data_to_server" android:title="@string/saveDataToServer" android:icon="@drawable/baseline_cloud_upload_24"/>
+            <item android:id="@+id/item_load_data_from_server" android:title="@string/loadDataFromServer" android:icon="@drawable/baseline_cloud_download_24"/>
+            <item android:id="@+id/item_read_from_cvs" android:title="@string/readFromCvsFile" android:icon="@drawable/baseline_upload_file_24"/>
         </menu>
     </item>
     <item android:id="@+id/item_exit" android:title="@string/exit" android:icon="@drawable/baseline_exit_to_app_24"/>

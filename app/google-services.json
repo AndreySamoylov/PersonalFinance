@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1052425471476",
+    "firebase_url": "https://finance-7b443-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "finance-7b443",
+    "storage_bucket": "finance-7b443.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1052425471476:android:5526437b362b935c02e5a1",
+        "android_client_info": {
+          "package_name": "com.example.finance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1052425471476-8l5m9n7q56mu3259r7v94r073nanhugq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.finance",
+            "certificate_hash": "1c3f87fa267099450889b13d5b95142270e3d6d8"
+          }
+        },
+        {
+          "client_id": "1052425471476-8mkb6qplgqf4liubh8qdc4dcrufp5lvv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2BYfTShoDvYf7MyT4sZ5YkIRzRzM8tZA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1052425471476-8mkb6qplgqf4liubh8qdc4dcrufp5lvv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

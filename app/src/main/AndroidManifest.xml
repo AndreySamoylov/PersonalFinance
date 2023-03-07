@@ -12,6 +12,9 @@
         android:theme="@style/Theme.Finance"
         tools:targetApi="31">
         <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".incomeUtilities.ListIncomeActivity"
             android:exported="false" />
         <activity

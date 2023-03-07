@@ -55,28 +55,27 @@ class CategoryFragment : Fragment(), MyCategoryAdapter.Listener {
             // Если выбрана радиокнопка "расход"
             // Иначе выбрана кнопка "доход"
             if (isChecked){
-                myDbManager.openDatabase()
                 val list : List<MyCategory> = myDbManager.fromCategories(MyConstants.CATEGORY_TYPE_COST)
                 adapter.addAllCategoryList(list)
-                myDbManager.closeDatabase()
             }
             else{
-                myDbManager.openDatabase()
                 val list : List<MyCategory> = myDbManager.fromCategories(MyConstants.CATEGORY_TYPE_INCOME)
                 adapter.addAllCategoryList(list)
-                myDbManager.closeDatabase()
             }
         }
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         myDbManager.openDatabase()
 
         val list : List<MyCategory> = myDbManager.fromCategories(MyConstants.CATEGORY_TYPE_COST)
         adapter.addAllCategoryList(list)
         radioButtonCategoryCost.isChecked = true
+    }
 
+    override fun onPause() {
+        super.onPause()
         myDbManager.closeDatabase()
     }
 

@@ -5,10 +5,7 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import com.example.finance.items.MyAccount
-import com.example.finance.items.MyCategory
-import com.example.finance.items.MyCost
-import com.example.finance.items.MyIncome
+import com.example.finance.items.*
 
 class MyDbManager(private val context: Context) {
     private val myDbHealper: MyDbHelper = MyDbHelper(context)
@@ -24,6 +21,13 @@ class MyDbManager(private val context: Context) {
 
     fun insertToAccounts(account: MyAccount) {
         val contentValues = ContentValues()
+        contentValues.put(MyDatabaseConstants.NAME_ACCOUNT, account.name)
+        sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_ACCOUNTS, null, contentValues)
+    }
+
+    fun insertToAccountsWithID(account: MyAccount) {
+        val contentValues = ContentValues()
+        contentValues.put(MyDatabaseConstants.ID_ACCOUNT, account._id)
         contentValues.put(MyDatabaseConstants.NAME_ACCOUNT, account.name)
         sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_ACCOUNTS, null, contentValues)
     }
@@ -99,6 +103,17 @@ class MyDbManager(private val context: Context) {
         sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_CATEGORIES, null, contentValues)
     }
 
+    fun insertToCategoriesWithID(category: MyCategory) {
+        val contentValues = ContentValues()
+        contentValues.put(MyDatabaseConstants.ID_CATEGORY, category._id)
+        contentValues.put(MyDatabaseConstants.NAME_CATEGORY, category._name)
+        contentValues.put(MyDatabaseConstants.COLOR_CATEGORY, category._color)
+        contentValues.put(MyDatabaseConstants.IMAGE_CATEGORY, category._image)
+        contentValues.put(MyDatabaseConstants.TYPE_CATEGORY, category._type)
+        contentValues.put(MyDatabaseConstants.UNDELETEBLE_CATEGORY, category._undeletable)
+        sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_CATEGORIES, null, contentValues)
+    }
+
     fun updateInCategories(category: MyCategory) {
         val values = ContentValues().apply {
             put(MyDatabaseConstants.NAME_CATEGORY, category._name)
@@ -119,6 +134,7 @@ class MyDbManager(private val context: Context) {
         )
     }
 
+    //Метод возвращает список категорий
     val fromCategories: List<MyCategory>
         get() {
             val tempList: MutableList<MyCategory> = ArrayList()
@@ -140,6 +156,34 @@ class MyDbManager(private val context: Context) {
                 @SuppressLint("Range") val undeletable =
                     cursor.getInt(cursor.getColumnIndex(MyDatabaseConstants.UNDELETEBLE_CATEGORY)).toByte()
                 val category = MyCategory(id, name, color, image, type, undeletable)
+                tempList.add(category)
+            }
+            cursor.close()
+            return tempList
+        }
+
+    //Метод возвращает список категорий, в формате для добавления в firebase realtime database
+    val fromCategoriesFirebaseType: List<MyCategoryFirebase>
+        get() {
+            val tempList: MutableList<MyCategoryFirebase> = ArrayList()
+            val cursor = sqLiteDatabase!!.query(
+                MyDatabaseConstants.TABLE_CATEGORIES, null, null, null,
+                null, null, null
+            )
+            while (cursor.moveToNext()) {
+                @SuppressLint("Range") val id =
+                    cursor.getLong(cursor.getColumnIndex(MyDatabaseConstants.ID_CATEGORY))
+                @SuppressLint("Range") val name =
+                    cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.NAME_CATEGORY))
+                @SuppressLint("Range") val color =
+                    cursor.getString(cursor.getColumnIndex(MyDatabaseConstants.COLOR_CATEGORY))
+                @SuppressLint("Range") val image =
+                    cursor.getInt(cursor.getColumnIndex(MyDatabaseConstants.IMAGE_CATEGORY))
+                @SuppressLint("Range") val type =
+                    cursor.getInt(cursor.getColumnIndex(MyDatabaseConstants.TYPE_CATEGORY))
+                @SuppressLint("Range") val undeletable =
+                    cursor.getInt(cursor.getColumnIndex(MyDatabaseConstants.UNDELETEBLE_CATEGORY))
+                val category = MyCategoryFirebase(id, name, color, image, type, undeletable)
                 tempList.add(category)
             }
             cursor.close()
@@ -248,6 +292,17 @@ class MyDbManager(private val context: Context) {
 
     fun insertToCosts(cost: MyCost) {
         val contentValues = ContentValues()
+        contentValues.put(MyDatabaseConstants.SUM_COST, cost._sum)
+        contentValues.put(MyDatabaseConstants.DATE_COST, cost._date_cost)
+        contentValues.put(MyDatabaseConstants.COMMENT_COST, cost._comment)
+        contentValues.put(MyDatabaseConstants.ID_ACCOUNT_COST, cost._account)
+        contentValues.put(MyDatabaseConstants.ID_CATEGORY_COST, cost._category)
+        sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_COSTS, null, contentValues)
+    }
+
+    fun insertToCostsWithID(cost: MyCost) {
+        val contentValues = ContentValues()
+        contentValues.put(MyDatabaseConstants.ID_COST, cost._id)
         contentValues.put(MyDatabaseConstants.SUM_COST, cost._sum)
         contentValues.put(MyDatabaseConstants.DATE_COST, cost._date_cost)
         contentValues.put(MyDatabaseConstants.COMMENT_COST, cost._comment)
@@ -510,6 +565,17 @@ class MyDbManager(private val context: Context) {
         sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_INCOME, null, contentValues)
     }
 
+    fun insertToIncomeWithID(income: MyIncome) {
+        val contentValues = ContentValues()
+        contentValues.put(MyDatabaseConstants.ID_INCOME, income._id)
+        contentValues.put(MyDatabaseConstants.SUM_INCOME, income._sum)
+        contentValues.put(MyDatabaseConstants.DATE_INCOME, income._date_income)
+        contentValues.put(MyDatabaseConstants.COMMENT_INCOME, income._comment)
+        contentValues.put(MyDatabaseConstants.ID_ACCOUNT_INCOME, income._account)
+        contentValues.put(MyDatabaseConstants.ID_CATEGORY_INCOME, income._category)
+        sqLiteDatabase!!.insert(MyDatabaseConstants.TABLE_INCOME, null, contentValues)
+    }
+
     fun updateInIncome(income: MyIncome) {
         val values = ContentValues().apply {
             put(MyDatabaseConstants.SUM_INCOME, income._sum)
@@ -748,5 +814,21 @@ class MyDbManager(private val context: Context) {
         }
         cursor.close()
         return allSum
+    }
+
+    fun clearTableAccounts(){
+        sqLiteDatabase!!.delete(MyDatabaseConstants.TABLE_ACCOUNTS,null,null)
+    }
+
+    fun clearTableCategories(){
+        sqLiteDatabase!!.delete(MyDatabaseConstants.TABLE_CATEGORIES,null,null)
+    }
+
+    fun clearTableCosts(){
+        sqLiteDatabase!!.delete(MyDatabaseConstants.TABLE_COSTS,null,null)
+    }
+
+    fun clearTableIncome(){
+        sqLiteDatabase!!.delete(MyDatabaseConstants.TABLE_INCOME,null,null)
     }
 }

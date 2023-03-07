@@ -114,8 +114,8 @@ class CostFragment : Fragment() {
         editTextFinalDateCost.setOnClickListener(onEditTextClickListener)
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         myDbManager.openDatabase()
 
         // Создание адаптера для волчка выбора счетов
@@ -129,8 +129,6 @@ class CostFragment : Fragment() {
             accountList
         )
         spinnerAccounts.adapter = adapterAccounts
-
-        myDbManager.closeDatabase()
 
         // Инициализация календаря
         val calendar: Calendar = Calendar.getInstance()
@@ -166,14 +164,17 @@ class CostFragment : Fragment() {
         setDateTimeInitial(calendar.timeInMillis)
     }
 
+    override fun onPause() {
+        super.onPause()
+        myDbManager.closeDatabase()
+    }
+
     companion object{
         @JvmStatic
         fun newInstance() = CostFragment()
     }
 
     private fun createPieChart(){
-        myDbManager.openDatabase()
-
         lateinit var selectedAccount : MyAccount
         try{
             selectedAccount = spinnerAccounts.selectedItem as MyAccount // Выбранные счёт
@@ -197,8 +198,6 @@ class CostFragment : Fragment() {
             }
             allSum += sum
         }
-
-        myDbManager.closeDatabase()
 
         val pieEntriesSelective = ArrayList<PieEntry>() // Список который будет добавлен в диаграмму
         var otherSum = 0f // Сумма остальных категорий

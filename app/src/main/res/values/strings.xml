@@ -1,4 +1,6 @@
 <resources>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
     <!--Существительные-->
     <string name="app_name">Finance</string>
     <string name="income">Поступления</string>
@@ -21,6 +23,8 @@
     <string name="nameCategory">Название категории</string>
     <string name="allOperations">Все операции</string>
     <string name="scanner">Сканер</string>
+    <string name="email">Почта</string>
+    <string name="password">Пароль</string>
     <!--Глаголы-->
     <string name="plus">+</string>
     <string name="ok">ОК</string>
@@ -43,6 +47,11 @@
     <string name="chooseAccount">Выберите счёт</string>
     <string name="changeDate">Изменить дату</string>
     <string name="scanned">Отсканировано</string>
+    <string name="youDoNotEnterAccount">Вы не вошли в аккаунт</string>
+    <string name="youEnterAs">Вы вошли как:</string>
+    <string name="signUp">Зарегистрироваться</string>
+    <string name="signIn">Войти</string>
+    <string name="signOut">Выйти</string>
     <!-- Всплывающие сообщения -->
     <string name="recordHaveAdded">Запись была добавлена</string>
     <string name="categoryHaveAdded">Категория была добавлена</string>
@@ -52,8 +61,19 @@
     <string name="accountHaveChanged">Счёт был изменен</string>
     <string name="recordHaveDeleted">Запись была удалена</string>
     <string name="categoryHaveDeleted">Категория была удалена</string>
-    <string name="accountHaveDeleted">Счёт был удалнён</string>
+    <string name="accountHaveDeleted">Счёт был удалён</string>
+    <string name="dataSuccesfulSave">Данные успешно сохранены</string>
+    <string name="dataFailedSave">Ошибка сохранения данных</string>
+    <string name="dataSuccesfulLoad">Данные успешно загруженны</string>
+    <string name="dataFailedLoad">Ошибка загрузки данных</string>
+    <string name="youHaveNotAuth">Вы не авторизировались</string>
+    <!-- Диалоговые окна -->
+    <string name="doYouWantSaveDataToServer">Вы уверенны, что хотите сохранить данные?</string>
+    <string name="doYouWantLoadDataFromServer">Вы уверенны, что хотите загрузить данные?</string>
     <!-- Заголовки для элементов меню-->
+    <string name="enterAccount">Войти в аккаунт</string>
+    <string name="saveDataToServer">Сохранить данные на сервер</string>
+    <string name="loadDataFromServer">Загрузить данные c сервера</string>
     <string name="readFromCvsFile">Чтение из CVS файла</string>
     <string name="exit">Выйти</string>
 </resources>

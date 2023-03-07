@@ -2,7 +2,7 @@ package com.example.finance.database
 
 object MyDatabaseConstants{
     const val DB_NAME = "finance.db"
-    const val DB_VERSION = 25
+    const val DB_VERSION = 26
 
     //Таблица счета
     const val TABLE_ACCOUNTS = "accounts"
